@@ -78,7 +78,7 @@ var Term = function(){
   });
 
   this.__defineGetter__('width', function(){
-    return width;
+    return columns;
   });
 
   this.__defineGetter__('rows', function(){
@@ -143,10 +143,10 @@ Term.prototype.prevLine = function(i){
 };
 
 Term.prototype.move = function(x, y){
-  if (x < 0) x = columns - x;
+  if (x < 0) x = columns + x;
 
   if (y){
-    if (y < 0) y = rows - y;
+    if (y < 0) y = rows + y;
     stdout.write('\x1B[' + x + ';' + y + 'H');
   } else {
     stdout.write('\x1B[' + x + 'G');
