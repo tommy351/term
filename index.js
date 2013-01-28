@@ -30,6 +30,10 @@ var styles = {
   del: 9
 };
 
+var isNumber = function(i){
+  return toString.call(i) === '[object Number]';
+};
+
 for (var i in colors){
   (function(i){
     var bgText = 'bg' + i.substring(0, 1).toUpperCase() + i.substring(1);
@@ -60,12 +64,34 @@ for (var j in styles){
   })(j);
 }
 
-String.prototype.color = String.prototype.foreground = String.prototype.fg = function(color){
-  return '\x1B[' + colors[color] + 'm' + this + '\x1B[39m';
+String.prototype.color = String.prototype.foreground = String.prototype.fg = function(i){
+  if (isNumber(i)){
+    return '\x1B[38;5;' + i + 'm' + this + '\x1B[39m';
+  } else {
+    if (i.match(/Bright$/)){
+      var bright = true;
+      i = i.replace(/Bright$/, '');
+    }
+
+    var code = colors[i];
+    if (bright) code += 60;
+    return '\x1B[' + code + 'm' + this + '\x1B[39m';
+  }
 };
 
-String.prototype.background = String.prototype.bg = function(color){
-  return '\x1B[' + (colors[color] + 10) + 'm' + this + '\x1B[49m';
+String.prototype.background = String.prototype.bg = function(i){
+  if (isNumber(i)){
+    return '\x1B[48;5;' + i + 'm' + this + '\x1B[49m';
+  } else {
+    if (i.match(/Bright$/)){
+      var bright = true;
+      i = i.replace(/Bright$/, '');
+    }
+
+    var code = colors[i] + 10;
+    if (bright) code += 60;
+    return '\x1B[' + code + 'm' + this + '\x1B[49m';
+  }
 };
 
 String.prototype.style = function(style){
